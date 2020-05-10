@@ -50,21 +50,9 @@ export default function HomePage() {
     }
     
     function processListings(json) {
-        console.log(json);
         let numResults = 10; //TODO: get the number of results to fetch.
     
-        // let listings = json.slice(0, numResults);
-    
-        // var tableData = [
-        //     {'quantity': 100, 'cost': 1000, 'total-cost': 100000},
-        //     {'quantity': 2, 'cost': 200, 'total-cost': 400},
-        //     {'quantity': 3, 'cost': 300, 'total-cost': 900},
-        // ];
-    
-        listingsTableRef.current.setTableData([
-            { 'quantity': 4, 'cost': 100, 'total-cost': 400 },
-            { 'quantity': 5, 'cost': 200, 'total-cost': 1000 },
-            { 'quantity': 6, 'cost': 300, 'total-cost': 1800 },
-        ]);
+        let listings = json.slice(0, numResults).map(x => {return { 'quantity': x.quantity, 'cost': x.cost, 'total-cost': x.cost * x.quantity}});
+        listingsTableRef.current.setTableData(listings);
     }
 }

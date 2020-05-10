@@ -10,7 +10,7 @@ const TABLE_COLUMNS = [
 
 export default function ListingsTable(props, ref) {
     const [tableData, setTableData] = useState([]);
-    useImperativeHandle(ref, () => ({setTableData: setTableData}));
+    useImperativeHandle(ref, () => ({ setTableData: setTableData }));
 
     console.log(tableData);
 
