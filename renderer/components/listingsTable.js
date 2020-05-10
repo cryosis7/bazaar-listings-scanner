@@ -1,26 +1,18 @@
 import { TablePagination, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typography } from "@material-ui/core";
-import { useState } from 'react'
 import { priceFormatter } from '../../scripts/utils'
+import { useImperativeHandle, useState, forwardRef } from "react";
 
 const TABLE_COLUMNS = [
     { id: 'quantity', label: 'Quantity', align: 'center' },
-    { id: 'cost', label: 'Cost', isMoney: true },
-    { id: 'total-cost', label: 'Total Cost', isMoney: true }
+    { id: 'cost', label: 'Cost', isMoney: true, align: 'right' },
+    { id: 'total-cost', label: 'Total Cost', isMoney: true, align: 'right' }
 ];
 
-export default function ListingsTable({ tableData }) {
-    // const [tableData, setTableData] = useState(props.tableData);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+export default function ListingsTable(props, ref) {
+    const [tableData, setTableData] = useState([]);
+    useImperativeHandle(ref, () => ({setTableData: setTableData}));
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    console.log(tableData);
 
     return (
         <Paper>
@@ -42,7 +34,7 @@ export default function ListingsTable({ tableData }) {
                                     {TABLE_COLUMNS.map((column) => {
                                         const value = row[column.id];
                                         return (
-                                            <TableCell key={column.id} align={column.align}>
+                                            <TableCell align={column.align}>
                                                 {column.isMoney ? priceFormatter(value) : value.toLocaleString('en-US')}
                                             </TableCell>
                                         );
@@ -53,10 +45,11 @@ export default function ListingsTable({ tableData }) {
                     </Table>
                 </TableContainer>
             ) : (
-                    <Typography variant="h2">
+                    <Typography variant="h6">
                         No bazaar listings to display
                     </Typography>
                 )}
         </Paper>
     );
 }
+ListingsTable = forwardRef(ListingsTable);
