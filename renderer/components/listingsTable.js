@@ -12,12 +12,14 @@ export default function ListingsTable(props, ref) {
     const [tableData, setTableData] = useState([]);
     useImperativeHandle(ref, () => ({ setTableData: setTableData }));
 
-    console.log(tableData);
-
+    console.log(props)
     return (
         <Paper>
             {(tableData && tableData.length) ? (
                 <TableContainer>
+                <Typography variant='caption'>
+                    {props.itemName()}
+                </Typography>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
