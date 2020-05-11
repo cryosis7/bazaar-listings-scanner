@@ -9,15 +9,13 @@ const TABLE_COLUMNS = [
 ];
 
 export default function ListingsTable(props, ref) {
-    const [tableData, setTableData] = useState([]);
-    useImperativeHandle(ref, () => ({ setTableData: setTableData }));
-
     console.log(props)
+
     return (
         <Paper>
-            {(tableData && tableData.length) ? (
+            {(props.tableData() && props.tableData().length) ? (
                 <TableContainer>
-                <Typography variant='caption'>
+                <Typography variant='h5' align='center'>
                     {props.itemName()}
                 </Typography>
                     <Table stickyHeader>
@@ -31,8 +29,8 @@ export default function ListingsTable(props, ref) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableData.map((row) => (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                            {props.tableData().slice(0, props.numResults()).map((row) => (
+                                <TableRow hover role="checkbox" tabIndex={-1}>
                                     {TABLE_COLUMNS.map((column) => {
                                         const value = row[column.id];
                                         return (
@@ -54,4 +52,3 @@ export default function ListingsTable(props, ref) {
         </Paper>
     );
 }
-ListingsTable = forwardRef(ListingsTable);

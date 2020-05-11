@@ -10,8 +10,8 @@ import ApiError from '../../scripts/errors/apiError'
 // const formFields = {}
 
 export default function HomePage() {
-    const listingsTableRef = useRef(null);
-    const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' })
+    const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' });
+    const [tableData, setTableData] = useState();
 
     function handleFormChange(event) {
         let data = formData;
@@ -35,7 +35,7 @@ export default function HomePage() {
                 </form>
                 <br />
                 <Divider />
-                <ListingsTable itemName={() => formData.itemName} ref={listingsTableRef} />
+                <ListingsTable itemName={() => formData.itemName} tableData={() => tableData} numResults={() => formData.numResults} />
             </div>
         </>
     )
@@ -43,11 +43,10 @@ export default function HomePage() {
     async function searchItem() {
         // if (validForm()) { //TODO: validate form data
         try {
-            let itemId = await ApiHandler.getItemId(formData.itemName, 'oWCYcYDXgqhiQGeX');
-
+            let itemId = await ApiHandler.getItemId(formData.itemName, formData.apiKey);
             // TODO: Valid id?
 
-            ApiHandler.getJson(processListings, { key: 'oWCYcYDXgqhiQGeX', category: 'market', id: itemId, selections: 'bazaar', hasField: true });
+            ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: itemId, selections: 'bazaar', hasField: true });
         } catch (error) {
             console.error('Error occurred while processing search:');
             console.error(error)
@@ -58,9 +57,7 @@ export default function HomePage() {
     }
 
     function processListings(json) {
-        let numResults = 10; //TODO: get the number of results to fetch.
-
-        let listings = json.slice(0, numResults).map(x => { return { 'quantity': x.quantity, 'cost': x.cost, 'total-cost': x.cost * x.quantity } });
-        listingsTableRef.current.setTableData(listings);
+        let listings = json.map(x => { return { 'quantity': x.quantity, 'cost': x.cost, 'total-cost': x.cost * x.quantity } });
+        setTableData(listings);
     }
 }
