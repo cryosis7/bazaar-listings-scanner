@@ -37,21 +37,24 @@ export function getJson(callback, { key = '', category = '', id = '', selections
 }
 
 /**
- * Returns the matching items id or undefined.
+ * Returns the matching items id and proper name if exists.
  * @param {String} itemName
+ * @param {String} apiKey 
  */
-export async function getItemId(itemName, apiKey) {
-    if (!Object.keys(allItems).length)
-        await getJson(fillItemList, { key: apiKey, category: 'torn', selections: 'items', hasField: true });
+export async function getItem(itemName, apiKey) {
+    if (itemName) {
+        if (!Object.keys(allItems).length)
+            await getJson(fillItemList, { key: apiKey, category: 'torn', selections: 'items', hasField: true });
 
-    return allItems[itemName.trim().toLowerCase()];
+        return allItems[itemName.toLowerCase().trim()];
+    }
 }
 
 /**
  * Fills the item list with all items.
- * @param {String} apiKey
+ * @param {String} jsonItems
  */
-async function fillItemList(jsonItems) {    
+async function fillItemList(jsonItems) {
     for (let id in jsonItems)
-        allItems[jsonItems[id].name.toLowerCase().trim()] = id;
+        allItems[jsonItems[id].name.toLowerCase().trim()] = { id: id, properName: jsonItems[id].name };
 }

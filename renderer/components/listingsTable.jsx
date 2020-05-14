@@ -1,6 +1,5 @@
 import { TablePagination, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typography } from "@material-ui/core";
-import { priceFormatter } from '../../scripts/utils'
-import { useImperativeHandle, useState, forwardRef } from "react";
+import { priceFormatter, toTitleCase } from '../../scripts/utils'
 
 const TABLE_COLUMNS = [
     { id: 'quantity', label: 'Quantity', align: 'center' },
@@ -8,28 +7,27 @@ const TABLE_COLUMNS = [
     { id: 'total-cost', label: 'Total Cost', isMoney: true, align: 'right' }
 ];
 
-export default function ListingsTable(props, ref) {
-    console.log(props)
+export default function ListingsTable(props) {
 
+    let tableData = props.tableData();
     return (
-        <Paper>
-            {(props.tableData() && props.tableData().length) ? (
+        <Paper elevation={2}>
+            {(tableData && tableData.length) ? (
                 <TableContainer>
-                <Typography variant='h5' align='center'>
-                    {props.itemName()}
-                </Typography>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 {TABLE_COLUMNS.map(column => (
                                     <TableCell key={column.id} align={column.align}>
-                                        {column.label}
+                                    <Typography variant="subtitle1">
+                                            {column.label}
+                                            </Typography>
                                     </TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {props.tableData().slice(0, props.numResults()).map((row) => (
+                            {tableData.slice(0, props.numResults()).map((row) => (
                                 <TableRow hover role="checkbox" tabIndex={-1}>
                                     {TABLE_COLUMNS.map((column) => {
                                         const value = row[column.id];
