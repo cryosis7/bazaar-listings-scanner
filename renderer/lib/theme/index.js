@@ -16,4 +16,10 @@ export const theme = createMuiTheme({
       default: '#fff',
     },
   },
+  typography: {
+    subtitle1: {
+      fontVariant: 'small-caps',
+      letterSpacing: '0.1rem',
+    },
+  }
 });
