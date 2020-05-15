@@ -35,7 +35,7 @@ export default function HomePage() {
                 </form>
                 <br />
                 <Divider />
-                <ListingsTable itemName={() => formData.itemName} tableData={() => tableData} numResults={() => formData.numResults} />
+                <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} numResults={() => formData.numResults} />
             </div>
         </>
     )
