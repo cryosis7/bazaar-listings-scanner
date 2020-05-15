@@ -23,12 +23,12 @@ export default function HomePage() {
             </Head>
 
             <div>
-                <form id="search-bazaar-form" >
+                <form id="search-bazaar-form" onKeyPress={handleKeyPress} >
                     <TextField name="apiKey" label="API Key" onChange={handleFormChange} value={formData.apiKey} />
                     <TextField name='itemName' label="Enter Item" onChange={handleFormChange} />
                     <TextField name='numResults' type="number" label="Number of Results" defaultValue={formData.numResults}
                         inputProps={{ min: '1' }} onChange={handleFormChange} />
-                    <Button name='search-button' onClick={handleButtonClicked} onKeyPress={onKeyPress} variant="contained" color="primary">Search</Button>
+                    <Button name='search-button' onClick={searchItem} variant="contained" color="primary">Search</Button>
                 </form>
                 <br />
                 <Divider />
@@ -37,24 +37,20 @@ export default function HomePage() {
         </>
     )
 
-    function onKeyPress(e) {
-        if (e.which === 13)
-            handleButtonClicked();
-    }
-
-    function handleButtonClicked() {
-        searchItem()
+    function handleKeyPress(event) {
+        if (event.which === 13)
+            searchItem();
     }
 
     async function searchItem() {
         // if (validForm()) { //TODO: validate form data
         try {
+            console.log('Loading Icon...');
+
             let enteredItem = await ApiHandler.getItem(formData.itemName, formData.apiKey);
-            console.info('enteredItem: ');
-            console.info(enteredItem);
             if (enteredItem !== undefined) {
+                await ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
                 setSelectedItem(enteredItem);
-                ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
             }
             else
                 throw Error(`${formData.itemName} not found in items`)

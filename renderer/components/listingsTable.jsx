@@ -8,8 +8,8 @@ const TABLE_COLUMNS = [
 ];
 
 export default function ListingsTable(props) {
+    const tableData = props.tableData();
 
-    let tableData = props.tableData();
     return (
         <Paper elevation={2}>
             {(tableData && tableData.length) ? (

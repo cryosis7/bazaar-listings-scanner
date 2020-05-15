@@ -47,9 +47,9 @@ export async function getItem(itemName, apiKey) {
             await fillItemList(apiKey);
 
         let sanitisedName = itemName.toLowerCase().trim();
-        for (let item of Object.keys(allItems))
+        for (let [item, itemData] of Object.entries(allItems))
             if (item.includes(sanitisedName))
-                return item;
+                return itemData;
     }
 }
 
