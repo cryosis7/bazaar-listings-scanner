@@ -37,8 +37,9 @@ export function getJson(callback, { key = '', category = '', id = '', selections
 }
 
 /**
- * Returns the matching items id or undefined.
+ * Returns the matching items id and proper name if exists.
  * @param {String} itemName
+ * @param {String} apiKey 
  */
 export async function getItem(itemName, apiKey) {
     if (itemName) {

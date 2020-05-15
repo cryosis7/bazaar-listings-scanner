@@ -1,17 +1,14 @@
 import Head from 'next/head';
-import Link from 'next/link';
-import { Typography, TextField, Input, FilledInput, InputLabel, Divider, Button } from "@material-ui/core";
-import { useState, useRef } from 'react'
+import { TextField, Divider, Button } from "@material-ui/core";
+import { useState } from 'react'
 
-import ListingsTable from '../components/listingsTable';
+import BazaarScannerData from '../components/bazaarScannerData';
 const ApiHandler = require('../../scripts/apiHandler');
-import ApiError from '../../scripts/errors/apiError'
-
-// const formFields = {}
 
 export default function HomePage() {
     const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' });
     const [tableData, setTableData] = useState();
+    const [selectedItem, setSelectedItem] = useState();
 
     function handleFormChange(event) {
         let data = formData;
@@ -31,7 +28,7 @@ export default function HomePage() {
                     <TextField name='itemName' label="Enter Item" onChange={handleFormChange} />
                     <TextField name='numResults' type="number" label="Number of Results" defaultValue={formData.numResults}
                         inputProps={{ min: '1' }} onChange={handleFormChange} />
-                    <Button name='search-button' onClick={searchItem} variant="contained" color="primary">Search</Button>
+                    <Button name='search-button' onClick={handleButtonClicked} onKeyPress={onKeyPress} variant="contained" color="primary">Search</Button>
                 </form>
                 <br />
                 <Divider />
@@ -40,13 +37,27 @@ export default function HomePage() {
         </>
     )
 
+    function onKeyPress(e) {
+        if (e.which === 13)
+            handleButtonClicked();
+    }
+
+    function handleButtonClicked() {
+        searchItem()
+    }
+
     async function searchItem() {
         // if (validForm()) { //TODO: validate form data
         try {
-            let itemId = await ApiHandler.getItemId(formData.itemName, formData.apiKey);
-            // TODO: Valid id?
-
-            ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: itemId, selections: 'bazaar', hasField: true });
+            let enteredItem = await ApiHandler.getItem(formData.itemName, formData.apiKey);
+            console.info('enteredItem: ');
+            console.info(enteredItem);
+            if (enteredItem !== undefined) {
+                setSelectedItem(enteredItem);
+                ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
+            }
+            else
+                throw Error(`${formData.itemName} not found in items`)
         } catch (error) {
             console.error('Error occurred while processing search:');
             console.error(error)
