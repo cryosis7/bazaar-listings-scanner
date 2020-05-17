@@ -1,19 +1,35 @@
 import Head from 'next/head';
 import { TextField, Divider, Button } from "@material-ui/core";
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import BazaarScannerData from '../components/bazaarScannerData';
 const ApiHandler = require('../../scripts/apiHandler');
 
 export default function HomePage() {
-    const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' });
+    const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' }); //TODO: Replace with on submit data
     const [tableData, setTableData] = useState();
     const [selectedItem, setSelectedItem] = useState();
+    const [formValidationState, setFormValidationState] = useState({apiKey: true, itemName: true, numResults: true});
+
+    function validate(values) {
+        let validationState = {}
+        validationState.apiKey = (values.apiKey && values.apiKey.length === 16) ? true : false
+        validationState.itemName = (values.itemName) ? true : false
+        validationState.numResults = (values.numResults && values.numResults > 0) ? true : false
+        
+        setFormValidationState(validationState)
+        return Object.values(validationState).reduce((accumulated, current) => accumulated && current)
+    }
 
     function handleFormChange(event) {
-        let data = formData;
-        data[event.target.name] = event.target.value;
-        setFormData(data);
+        formData[event.target.name] = event.target.value;
+        setFormData(formData);
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        if (validate(formData))
+            searchItem();
     }
 
     return (
@@ -23,12 +39,15 @@ export default function HomePage() {
             </Head>
 
             <div>
-                <form id="search-bazaar-form" onKeyPress={handleKeyPress} >
-                    <TextField name="apiKey" label="API Key" onChange={handleFormChange} value={formData.apiKey} />
-                    <TextField name='itemName' label="Enter Item" onChange={handleFormChange} />
-                    <TextField name='numResults' type="number" label="Number of Results" defaultValue={formData.numResults}
-                        inputProps={{ min: '1' }} onChange={handleFormChange} />
-                    <Button name='search-button' onClick={searchItem} variant="contained" color="primary">Search</Button>
+                <form id="search-bazaar-form" onSubmit={handleSubmit} >
+                    <TextField name="apiKey" label="API Key" onChange={handleFormChange} defaultValue={formData.apiKey}
+                        error={!formValidationState.apiKey} helperText={!formValidationState.apiKey && "Invalid Api Key"} />
+                    <TextField name='itemName' label="Enter Item" onChange={handleFormChange} 
+                        error={!formValidationState.itemName} helperText={!formValidationState.itemName && "Invalid Item"} />
+                    <TextField name='numResults' label="Number of Results" type="number" defaultValue={formData.numResults}
+                        inputProps={{ min: '1' }} onChange={handleFormChange} error={!formValidationState.numResults}/>
+
+                    <Button type='submit' name='search-button' variant="contained" color="primary">Search</Button>
                 </form>
                 <br />
                 <Divider />
@@ -37,13 +56,7 @@ export default function HomePage() {
         </>
     )
 
-    function handleKeyPress(event) {
-        if (event.which === 13)
-            searchItem();
-    }
-
     async function searchItem() {
-        // if (validForm()) { //TODO: validate form data
         try {
             console.log('Loading Icon...');
 
@@ -58,9 +71,6 @@ export default function HomePage() {
             console.error('Error occurred while processing search:');
             console.error(error)
         }
-        // }
-        // else
-        //     highlightErrors();
     }
 
     function processListings(json) {
