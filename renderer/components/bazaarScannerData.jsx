@@ -10,12 +10,12 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function BazaarScannerData(props) {
+export default function BazaarScannerData(props) {    
     const classes = useStyles();
     const selectedItem = props.selectedItem();
-
+    
     return (
-        <Paper className={classes.root} elevation={1}>
+        <Paper className={classes.root} elevation={1} tabIndex={-1}>
             {(selectedItem && selectedItem.properName && selectedItem.properName.length) ? (
                 <>
                     <Paper elevation={2}>

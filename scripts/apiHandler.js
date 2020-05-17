@@ -44,17 +44,22 @@ export function getJson(callback, { key = '', category = '', id = '', selections
 export async function getItem(itemName, apiKey) {
     if (itemName) {
         if (!Object.keys(allItems).length)
-            await getJson(fillItemList, { key: apiKey, category: 'torn', selections: 'items', hasField: true });
+            await fillItemList(apiKey);
 
-        return allItems[itemName.toLowerCase().trim()];
+        let sanitisedName = itemName.toLowerCase().trim();
+        for (let [item, itemData] of Object.entries(allItems))
+            if (item.includes(sanitisedName))
+                return itemData;
     }
 }
 
 /**
  * Fills the item list with all items.
- * @param {String} jsonItems
+ * @param {String} apiKey 
  */
-async function fillItemList(jsonItems) {
-    for (let id in jsonItems)
-        allItems[jsonItems[id].name.toLowerCase().trim()] = { id: id, properName: jsonItems[id].name };
+async function fillItemList(apiKey) {
+    await getJson((jsonItems) => {
+        for (let id in jsonItems)
+            allItems[jsonItems[id].name.toLowerCase().trim()] = { id: id, properName: jsonItems[id].name };
+    }, { key: apiKey, category: 'torn', selections: 'items', hasField: true });
 }
