@@ -4,9 +4,10 @@ import { useState, useRef } from 'react'
 
 import BazaarScannerData from '../components/bazaarScannerData';
 const ApiHandler = require('../../scripts/apiHandler');
+const DataStore = require('../../scripts/dataStore');
 
 export default function HomePage() {
-    const [formData, setFormData] = useState({ apiKey: 'oWCYcYDXgqhiQGeX', numResults: '10' }); //TODO: Replace with on submit data
+    const [formData, setFormData] = useState(DataStore.readData()); //TODO: Replace with on submit data
     const [tableData, setTableData] = useState();
     const [selectedItem, setSelectedItem] = useState();
     const [formValidationState, setFormValidationState] = useState({apiKey: true, itemName: true, numResults: true});
@@ -28,8 +29,9 @@ export default function HomePage() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        if (validate(formData))
+        if (validate(formData)) {
             searchItem();
+        }
     }
 
     return (
@@ -40,11 +42,11 @@ export default function HomePage() {
 
             <div>
                 <form id="search-bazaar-form" onSubmit={handleSubmit} >
-                    <TextField name="apiKey" label="API Key" onChange={handleFormChange} defaultValue={formData.apiKey}
+                    <TextField name="apiKey" label="API Key" onChange={handleFormChange} defaultValue={formData ? formData.apiKey : ''}
                         error={!formValidationState.apiKey} helperText={!formValidationState.apiKey && "Invalid Api Key"} />
                     <TextField name='itemName' label="Enter Item" onChange={handleFormChange} 
                         error={!formValidationState.itemName} helperText={!formValidationState.itemName && "Invalid Item"} />
-                    <TextField name='numResults' label="Number of Results" type="number" defaultValue={formData.numResults}
+                    <TextField name='numResults' label="Number of Results" type="number" defaultValue={formData ? formData.numResults : ''}
                         inputProps={{ min: '1' }} onChange={handleFormChange} error={!formValidationState.numResults}/>
 
                     <Button type='submit' name='search-button' variant="contained" color="primary">Search</Button>
@@ -58,18 +60,18 @@ export default function HomePage() {
 
     async function searchItem() {
         try {
-            console.log('Loading Icon...');
+            console.log('Insert Loading Icon Here ...');
 
             let enteredItem = await ApiHandler.getItem(formData.itemName, formData.apiKey);
             if (enteredItem !== undefined) {
-                await ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
+                ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
                 setSelectedItem(enteredItem);
+                DataStore.storeData(formData)
             }
             else
                 throw Error(`${formData.itemName} not found in items`)
         } catch (error) {
-            console.error('Error occurred while processing search:');
-            console.error(error)
+            console.error('Error occurred while processing search:', error)
         }
     }
 
