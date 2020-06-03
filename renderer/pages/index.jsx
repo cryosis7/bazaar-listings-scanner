@@ -11,6 +11,7 @@ export default function HomePage() {
     const [tableData, setTableData] = useState();
     const [selectedItem, setSelectedItem] = useState();
     const [formValidationState, setFormValidationState] = useState({apiKey: true, itemName: true, numResults: true});
+    const [loading, setLoading] = useState(false);
 
     function validate(values) {
         let validationState = {}
@@ -53,15 +54,14 @@ export default function HomePage() {
                 </form>
                 <br />
                 <Divider />
-                <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} numResults={() => formData.numResults} />
+                <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} numResults={() => formData.numResults} loading={loading}/>
             </div>
         </>
     )
 
     async function searchItem() {
+        setLoading(true);
         try {
-            console.log('Insert Loading Icon Here ...');
-
             let enteredItem = await ApiHandler.getItem(formData.itemName, formData.apiKey);
             if (enteredItem !== undefined) {
                 ApiHandler.getJson(processListings, { key: formData.apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
@@ -71,12 +71,14 @@ export default function HomePage() {
             else
                 throw Error(`${formData.itemName} not found in items`)
         } catch (error) {
+            setLoading(false);
             console.error('Error occurred while processing search:', error)
         }
     }
 
     function processListings(json) {
-        let listings = json.map(x => { return { 'quantity': x.quantity, 'cost': x.cost, 'total-cost': x.cost * x.quantity } });
+        setLoading(false);
+        let listings = json.map(x => { return { 'quantity': x.quantity, 'cost': x.cost, 'total-cost': x.cost * x.quantity, 'id': x.ID } });
         setTableData(listings);
     }
 }

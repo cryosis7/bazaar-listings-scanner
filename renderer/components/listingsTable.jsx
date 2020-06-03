@@ -19,24 +19,21 @@ export default function ListingsTable(props) {
                             <TableRow>
                                 {TABLE_COLUMNS.map(column => (
                                     <TableCell key={column.id} align={column.align}>
-                                    <Typography variant="subtitle1">
+                                        <Typography variant="subtitle1">
                                             {column.label}
-                                            </Typography>
+                                        </Typography>
                                     </TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {tableData.slice(0, props.numResults()).map((row) => (
-                                <TableRow hover role="checkbox" tabIndex={-1}>
-                                    {TABLE_COLUMNS.map((column) => {
-                                        const value = row[column.id];
-                                        return (
-                                            <TableCell align={column.align}>
-                                                {column.isMoney ? priceFormatter(value) : value.toLocaleString('en-US')}
-                                            </TableCell>
-                                        );
-                                    })}
+                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                    {TABLE_COLUMNS.map((column) => (
+                                        <TableCell align={column.align} key={row.id + column.id}>
+                                            {column.isMoney ? priceFormatter(row[column.id]) : row[column.id].toLocaleString('en-US')}
+                                        </TableCell>
+                                    ))}
                                 </TableRow>
                             ))}
                         </TableBody>
