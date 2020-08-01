@@ -2,22 +2,25 @@ import React, { useState, FormEvent } from 'react';
 // import './App.css';
 
 import * as ApiHandler from './scripts/apiHandler';
-import { FormControl, InputLabel, Input, Button, Divider } from '@material-ui/core';
+import { FormControl, InputLabel, Input, Button, Divider, makeStyles, createStyles } from '@material-ui/core';
 import { InputError } from './constants/errors';
 import { ItemDataType, TableDataType } from './constants/types';
 import BazaarScannerData from './components/bazaarScannerData';
-const ElectronStore = require('electron-store');
+import classes from '*.module.css';
+const ElectronStore = window.require('electron-store');
 
-// const useStyles = makeStyles((theme) =>
-//     createStyles({
-//         root: {
-//             textAlign: 'center',
-//             paddingTop: theme.spacing(2),
-//         },
-//     })
-// );
+const useStyles = makeStyles((theme) =>
+    createStyles({
+        root: {
+            textAlign: 'center',
+            paddingTop: theme.spacing(2),
+        },
+    })
+);
 
 function App() {
+  const classes = useStyles();
+  
   const [configManager] = useState(new ElectronStore());
   const [apiKey, setApiKey] = useState<string>(configManager.get("apiKey", ""));
   const [itemName, setItemName] = useState<string>(configManager.get("itemName", ""));
@@ -81,7 +84,7 @@ function App() {
         <title>Bazaar Scanner</title>
       </head>
 
-      <div>
+      <div className={classes.root}>
         <form id="search-bazaar-form" onSubmit={handleSubmit} >
           <FormControl error={!isFormFieldValid.apiKey}>
             <InputLabel htmlFor="apiKey">API Key</InputLabel>
