@@ -1,7 +1,7 @@
-import { Paper, Typography, LinearProgress, makeStyles, createStyles } from "@material-ui/core";
-import ListingsTable from "./listingsTable";
+import { createStyles, LinearProgress, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
-import { TableDataType, ItemDataType } from "../constants/types";
+import { ItemDataType, TableDataType } from "../constants/types";
+import ListingsTable from "./listingsTable";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) =>
 export default function BazaarScannerData(props: {
     selectedItem: () => ItemDataType | undefined,
     tableData: () => TableDataType | undefined,
-    numResults: () => number,
     loading: boolean
 }) {
     const classes = useStyles();
@@ -31,7 +30,7 @@ export default function BazaarScannerData(props: {
                             <Typography variant='h6' gutterBottom>
                                 {selectedItem.properName}
                             </Typography>
-                            <ListingsTable tableData={props.tableData} numResults={props.numResults} />
+                            <ListingsTable tableData={props.tableData} />
                         </React.Fragment>
                     ) : (
                         <Typography variant="h6" gutterBottom>

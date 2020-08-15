@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) =>
     root: {
       textAlign: 'center',
       paddingTop: theme.spacing(2),
+      overflow: 'hidden',
     },
     container: {
       margin: '5px',
@@ -39,9 +40,8 @@ function App() {
   const [configManager] = useState(new ElectronStore());
   const [apiKey, setApiKey] = useState<string>(configManager.get("apiKey", ""));
   const [itemName, setItemName] = useState<string>(configManager.get("itemName", ""));
-  const [numResults, setNumResults] = useState<number>(configManager.get("numResults", 10));
 
-  const [isFormFieldValid, setIsFormFieldValid] = useState({ apiKey: true, itemName: true, numResults: true });
+  const [isFormFieldValid, setIsFormFieldValid] = useState({ apiKey: true, itemName: true });
 
   // Table information
   const [tableData, setTableData] = useState<TableDataType>();
@@ -52,11 +52,10 @@ function App() {
     let validationState = {
       apiKey: apiKey.length === 16,
       itemName: !!itemName.length,
-      numResults: numResults > 0,
     }
 
     setIsFormFieldValid(validationState)
-    return Object.values(validationState).reduce((accumulated, current) => accumulated && current)
+    return Object.values(validationState).every(element => element === true)
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -74,7 +73,7 @@ function App() {
       if (enteredItem !== undefined) {
         ApiHandler.getJson(processListings, { key: apiKey, category: 'market', id: enteredItem.id, selections: 'bazaar', hasField: true });
         setSelectedItem(enteredItem);
-        configManager.set({ apiKey: apiKey, itemName: itemName, numResults: numResults })
+        configManager.set({ apiKey: apiKey, itemName: itemName })
       }
       else
         throw new InputError(`${itemName} not found in items`);
@@ -95,10 +94,6 @@ function App() {
 
   return (
     <React.Fragment>
-      {/* <head>
-        <title>Bazaar Scanner</title>
-      </head> */}
-
       <div className={classes.root}>
         <form id="search-bazaar-form" onSubmit={handleSubmit} className={classes.container}>
           <FormControl error={!isFormFieldValid.apiKey} className={classes.item}>
@@ -113,19 +108,13 @@ function App() {
           </FormControl>
           {/* <TextField name='itemName' label="Enter Item" onChange={handleFormChange}
               error={!isFormFieldValid.itemName} helperText={!isFormFieldValid.itemName && "Invalid Item"} /> */}
-          <FormControl className={classes.item}>
-            <InputLabel htmlFor="numResults">Number of Results</InputLabel>
-            <Input id="numResults" type="number" value={numResults} onChange={e => setNumResults(parseInt(e.target.value))} />
-          </FormControl>
-          {/* <TextField name='numResults' label="Number of Results" type="number" defaultValue={formData?.numResults || ''}
-            inputProps={{ min: '1' }} onChange={handleFormChange} error={!isFormFieldValid.numResults} /> */}
 
           <div className={[classes.item, classes.search_button].join(' ')}>
             <Button type='submit' name='search-button' variant="contained" color="primary">Search</Button>
           </div>
         </form>
         <Divider />
-        <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} numResults={() => numResults} loading={loading} />
+        <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} loading={loading} />
       </div>
     </React.Fragment>
   );
