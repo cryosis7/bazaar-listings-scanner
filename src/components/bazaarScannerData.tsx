@@ -27,13 +27,13 @@ export default function BazaarScannerData(props: {
                 <div className={classes.root}>
                     {(selectedItem?.properName.length) ? (
                         <React.Fragment>
-                            <Typography variant='h6' gutterBottom>
+                            <Typography variant='h2' >
                                 {selectedItem.properName}
                             </Typography>
                             <ListingsTable tableData={props.tableData} />
                         </React.Fragment>
                     ) : (
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h2" >
                             Enter an item to search
                         </Typography>
                         )}

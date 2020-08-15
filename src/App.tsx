@@ -80,7 +80,7 @@ function App() {
     } catch (error) {
       setLoading(false);
       if (error instanceof InputError)
-        console.debug('Invalid Item Name');
+        console.error('Invalid Item Name');
       else
         console.error('Error occurred while processing search:', error)
     }
@@ -96,7 +96,7 @@ function App() {
     <React.Fragment>
       <div className={classes.root}>
         <form id="search-bazaar-form" onSubmit={handleSubmit} className={classes.container}>
-          <FormControl error={!isFormFieldValid.apiKey} className={classes.item}>
+          <FormControl className={classes.item} error={!isFormFieldValid.apiKey} >
             <InputLabel htmlFor="apiKey">API Key</InputLabel>
             <Input id="apiKey" value={apiKey} onChange={e => setApiKey(e.target.value)} aria-describedby="apiKey-error" />
           </FormControl>
