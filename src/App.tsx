@@ -1,11 +1,9 @@
-import React, { useState, FormEvent } from 'react';
-// import './App.css';
-
-import * as ApiHandler from './scripts/apiHandler';
-import { FormControl, InputLabel, Input, Button, Divider, makeStyles, createStyles, Container, Box } from '@material-ui/core';
+import { Box, Button, createStyles, Divider, FormControl, Input, InputLabel, makeStyles } from '@material-ui/core';
+import React, { FormEvent, useState } from 'react';
+import BazaarScannerData from './components/bazaarScannerData';
 import { InputError } from './constants/errors';
 import { ItemDataType, TableDataType } from './constants/types';
-import BazaarScannerData from './components/bazaarScannerData';
+import * as ApiHandler from './scripts/apiHandler';
 const ElectronStore = window.require('electron-store');
 
 const useStyles = makeStyles((theme) =>
@@ -13,7 +11,6 @@ const useStyles = makeStyles((theme) =>
     root: {
       textAlign: 'center',
       paddingTop: theme.spacing(2),
-      overflow: 'hidden',
     },
     container: {
       margin: '5px',

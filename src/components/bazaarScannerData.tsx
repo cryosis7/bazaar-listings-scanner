@@ -6,7 +6,7 @@ import ListingsTable from "./listingsTable";
 const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
-            margin: '5px',
+            margin: '10px',
         },
     })
 );
