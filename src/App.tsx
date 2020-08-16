@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from 'react';
 // import './App.css';
 
 import * as ApiHandler from './scripts/apiHandler';
-import { FormControl, InputLabel, Input, Button, Divider, makeStyles, createStyles } from '@material-ui/core';
+import { FormControl, InputLabel, Input, Button, Divider, makeStyles, createStyles, Container, Box } from '@material-ui/core';
 import { InputError } from './constants/errors';
 import { ItemDataType, TableDataType } from './constants/types';
 import BazaarScannerData from './components/bazaarScannerData';
@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) =>
     },
     container: {
       margin: '5px',
-      padding: '5px',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'wrap',
@@ -27,10 +26,8 @@ const useStyles = makeStyles((theme) =>
     },
     item: {
       margin: '5px',
+      flexShrink: 0,
     },
-    search_button: {
-      flexBasis: '100%'
-    }
   })
 );
 
@@ -96,22 +93,20 @@ function App() {
     <React.Fragment>
       <div className={classes.root}>
         <form id="search-bazaar-form" onSubmit={handleSubmit} className={classes.container}>
-          <FormControl className={classes.item} error={!isFormFieldValid.apiKey} >
-            <InputLabel htmlFor="apiKey">API Key</InputLabel>
-            <Input id="apiKey" value={apiKey} onChange={e => setApiKey(e.target.value)} aria-describedby="apiKey-error" />
-          </FormControl>
-          {/* <TextField name="apiKey" label="API Key" onChange={handleFormChange} defaultValue={formData?.apiKey || ''}
-              error={!isFormFieldValid.apiKey} helperText={!isFormFieldValid.apiKey && "Invalid Api Key"} /> */}
-          <FormControl className={classes.item}>
-            <InputLabel htmlFor="itemName">Item Name</InputLabel>
-            <Input id="itemName" value={itemName} onChange={e => setItemName(e.target.value)} />
-          </FormControl>
-          {/* <TextField name='itemName' label="Enter Item" onChange={handleFormChange}
-              error={!isFormFieldValid.itemName} helperText={!isFormFieldValid.itemName && "Invalid Item"} /> */}
 
-          <div className={[classes.item, classes.search_button].join(' ')}>
-            <Button type='submit' name='search-button' variant="contained" color="primary">Search</Button>
-          </div>
+          <Box className={classes.container} flexGrow="1">
+            <FormControl className={classes.item} error={!isFormFieldValid.apiKey} >
+              <InputLabel htmlFor="apiKey">API Key</InputLabel>
+              <Input id="apiKey" value={apiKey} onChange={e => setApiKey(e.target.value)} aria-describedby="apiKey-error" />
+            </FormControl>
+
+            <FormControl className={classes.item} error={!isFormFieldValid.itemName && !itemName.length}>
+              <InputLabel htmlFor="itemName">Item Name</InputLabel>
+              <Input id="itemName" value={itemName} onChange={e => setItemName(e.target.value)} />
+            </FormControl>
+          </Box>
+
+          <Button type='submit' name='search-button' variant="contained" color="primary" className={classes.item}>Search</Button>
         </form>
         <Divider />
         <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} loading={loading} />
