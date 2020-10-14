@@ -22,6 +22,13 @@ export const theme = createMuiTheme({
       fontWeight: 300,
 
     },
+    h3: {
+      fontVariant: 'small-caps',
+      letterSpacing: '0.15rem',
+      fontSize: '1.15rem',
+      fontWeight: 200,
+
+    },
     subtitle1: {
       fontVariant: 'small-caps',
       letterSpacing: '0.1rem',
