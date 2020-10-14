@@ -1,5 +1,4 @@
-import { HttpError, ApiError } from '../constants/errors';
-import { ERROR_MESSAGES } from '../constants/constants';
+import { ApiError, HttpError } from '../constants/errors';
 import { ItemDataType } from '../constants/types';
 
 const allItems: Record<string, ItemDataType> = {};
@@ -24,11 +23,10 @@ export function getJson(callback: (json: any) => void, { key = '', category = ''
         })
         .then(json => {
             if (json.error !== undefined)
-                throw new ApiError(ERROR_MESSAGES[json.error.code], json.error.code);
+                throw new ApiError(json.error.code);
             callback((hasField ? json[selections] : json) ?? [])
         })
         .catch(err => {
-            console.error(err.name + ' while fetching results from Torn: ' + err.message + ' - ' + err.code, err);
             throw err;
         })
 }

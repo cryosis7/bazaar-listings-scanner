@@ -1,6 +1,8 @@
+import { ERROR_MESSAGES } from "./constants";
+
 export class ApiError extends Error {
-    constructor(public message: string, public code: number) {
-        super(message)
+    constructor(public code: number) {
+        super(ERROR_MESSAGES[code])
         this.name = 'ApiError';
     }
 }

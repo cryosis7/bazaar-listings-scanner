@@ -1,4 +1,4 @@
-import { Box, Button, createStyles, Divider, FormControl, Input, InputLabel, makeStyles } from '@material-ui/core';
+import { Box, Button, createStyles, Divider, FormControl, Input, InputLabel, makeStyles, Typography } from '@material-ui/core';
 import React, { FormEvent, useState } from 'react';
 import BazaarScannerData from './components/bazaarScannerData';
 import { InputError } from './constants/errors';
@@ -34,6 +34,7 @@ function App() {
   const [configManager] = useState(new ElectronStore());
   const [apiKey, setApiKey] = useState<string>(configManager.get("apiKey", ""));
   const [itemName, setItemName] = useState<string>(configManager.get("itemName", ""));
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [isFormFieldValid, setIsFormFieldValid] = useState({ apiKey: true, itemName: true });
 
@@ -55,13 +56,14 @@ function App() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (isValidData()) {
+      setErrorMessage("");
+      setLoading(true);
+
       searchItem();
     }
   }
 
   async function searchItem() {
-    setLoading(true);
-
     try {
       let enteredItem = await ApiHandler.getItem(itemName, apiKey);
       if (enteredItem !== undefined) {
@@ -73,10 +75,11 @@ function App() {
         throw new InputError(`${itemName} not found in items`);
     } catch (error) {
       setLoading(false);
-      if (error instanceof InputError)
-        console.error('Invalid Item Name');
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      }
       else
-        console.error('Error occurred while processing search:', error)
+        setErrorMessage(`An unexpected error was encountered: ${error}`)
     }
   }
 
@@ -106,7 +109,11 @@ function App() {
           <Button type='submit' name='search-button' variant="contained" color="primary" className={classes.item}>Search</Button>
         </form>
         <Divider />
-        <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} loading={loading} />
+        {!errorMessage.length ?
+          <BazaarScannerData selectedItem={() => selectedItem} tableData={() => tableData} loading={loading} />
+          :
+          <Typography variant="h2" style={{margin: '10px'}}>{errorMessage}</Typography>
+        }
       </div>
     </React.Fragment>
   );
