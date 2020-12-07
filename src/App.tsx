@@ -97,7 +97,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <div className={classes.root}>
+      <div className={classes.root} style={{height: "100vh"}}>
         <form id="search-bazaar-form" onSubmit={handleSubmit} className={classes.container}>
 
           <Box className={classes.container} flexGrow="1">

@@ -91,7 +91,7 @@ export default function ListingsTable(props: { tableData: () => TableDataType | 
                     </Table>
                 </TableContainer>
             ) : (
-                    <Typography variant="h2">
+                    <Typography variant="h3" style={{marginTop: "10px"}}>
                         No bazaar listings to display
                     </Typography>
                 )}
