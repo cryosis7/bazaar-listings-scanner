@@ -1,5 +1,5 @@
 import { Box, Button, createStyles, Divider, FormControl, Input, InputLabel, makeStyles, Typography } from '@material-ui/core';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import BazaarScannerData from './components/bazaarScannerData';
 import { InputError } from './constants/errors';
 import { ItemDataType, TableDataType } from './constants/types';
@@ -43,6 +43,8 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<ItemDataType>();
   const [loading, setLoading] = useState(false);
 
+  const itemInputRef = useRef<HTMLElement>(null)
+
   function isValidData() {
     let validationState = {
       apiKey: apiKey.length === 16,
@@ -52,6 +54,10 @@ function App() {
     setIsFormFieldValid(validationState)
     return Object.values(validationState).every(element => element === true)
   }
+
+  useEffect(() => {
+    itemInputRef.current?.focus()
+  })
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -102,7 +108,7 @@ function App() {
 
             <FormControl className={classes.item} error={!isFormFieldValid.itemName && !itemName.length}>
               <InputLabel htmlFor="itemName">Item Name</InputLabel>
-              <Input id="itemName" value={itemName} onChange={e => setItemName(e.target.value)} />
+              <Input id="itemName" value={itemName} onChange={e => setItemName(e.target.value)} inputRef={itemInputRef}/>
             </FormControl>
           </Box>
 

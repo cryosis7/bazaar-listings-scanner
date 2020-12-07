@@ -9,7 +9,10 @@ function createWindow() {
         width: 900, height: 680,
         webPreferences: {
             nodeIntegration: true,
-        }
+        },
+        title: "Bazaar Scanner",
+        autoHideMenuBar: true,
+        icon: "public/favicon.ico"
     });
     mainWindow.loadURL(
         isDev
