@@ -12,7 +12,6 @@ function createWindow() {
         },
         title: "Bazaar Scanner",
         autoHideMenuBar: true,
-        icon: "public/favicon.ico"
     });
     mainWindow.loadURL(
         isDev
